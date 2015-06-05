@@ -58,7 +58,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -83,3 +84,42 @@ Temporary Items
 *.blend1
 *.blend2
 *.exr
+
+# =========================
+# LaTeX
+# =========================
+
+# LaTeX auxiliary files
+*.aux
+*.auxlock
+*.glo
+*.idx
+*.log
+*.toc
+*.ist
+*.fdb_latexmk
+*.acn
+*.acr
+*.alg
+*.bbl
+*.blg
+*.tui
+*.top
+*.tmp
+*.mp
+*.dvi
+*.glg
+*.gls
+*.ilg
+*.ind
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc1
+*.out
+*.synctex
+*.synctex.gz
+*.pdfsync
+*.nav
+*.snm

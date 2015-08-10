@@ -22,8 +22,8 @@ initial_kernel = gausswin(d,9);
 err = x;
 niters = 6*number_of_trains + sqrt(36*number_of_trains);  % rule of thumb
 for iter = 1:niters
-    fprintf('Iteration %3d: residual %1.6e\n', iter, sqrt(mean(err(:).^2)))
-    show_trains(x,u,w); % Uncomment to show wavetrains at each step. Comment for speed.
+    %fprintf('Iteration %3d: residual %1.6e\n', iter, sqrt(mean(err(:).^2)))
+    %show_trains(x,u,w); % Uncomment to show wavetrains at each step. Comment for speed.
     
     for iTrain = 1:min(ceil(iter/4), K) % every four iteration a new train is added
         if sum(u(:,iTrain)) == 0
@@ -51,8 +51,6 @@ for iter = 1:niters
         err = x - reconstruct(u,w);
     end
 end
-%keyboard
-
 end
 
 

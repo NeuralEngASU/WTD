@@ -4,9 +4,11 @@ function [w, u] = choo3(x, number_of_trains, waveform_width)
 
 assert(mod(waveform_width, 2) == 1, 'waveform_width must be odd')
 
+% for thresholding (standard deviations)
+sigma = 2.0;
+
 % algorithm controls
 selectivity = 0.2;   % between 0 and 1, most likely between 0 and 0.5
-% selectivity = 0.2; % between 0 and 1, most likely between 0 and 0.5
 
 % rename for brevity
 d = waveform_width;
@@ -40,7 +42,7 @@ for iter = 1:niters
         
         % threshold waveform for detection and centering
         wt = w(:,:,iTrain); % create template waveform from error peak
-        wt(abs(wt)<2*sqrt(mean(wt(:).^2)))=0; % removes anything below two sigma of amlitude
+        wt = threshold_waveform(wt, sigma);
         
         % re-detect occurrences
         u(:, iTrain) = 0; % erases old occurrences so it can find them again
@@ -64,4 +66,16 @@ t = (1:size(w,1))';   % time
 t =  bsxfun(@minus, t, sum(bsxfun(@times, t, w)));  % coordinate relative to center of mass
 d = max(sqrt(sum(t.^2 .* w)));   % max standard deviation
 d = 2.5*d;   % multiples of standard deviation (rule of thumb, approximates width) (waveforms should not overlap)
+end
+
+function w = threshold_waveform(w, sigma)
+thresh = sigma*sqrt(mean(w(:).^2));
+for channel = 1:size(w,2)
+    ix = abs(w(:,channel))>thresh;
+    if ~any(ix)
+        w(:,channel) = 0;
+    else
+        w([1:find(ix, 1, 'first')-1, find(ix, 1, 'last')+1:end], channel) = 0;
+    end
+end
 end

@@ -27,7 +27,7 @@ for iter = 1:niters
     fprintf('Iteration %3d: residual %1.6e\n', iter, sqrt(mean(err(:).^2)))
     show_trains(x,u,w); % Uncomment to show wavetrains at each step. Comment for speed.
     
-    for iTrain = 1:min(ceil(iter/4), K) % every four iteration a new train is added
+    for iTrain = 1:min(ceil(iter/4), K) % every four iterations a new train is added
         if sum(u(:,iTrain)) == 0
             % initialize waveform with the largest peak in the error
             err([1:m end-m+1:end],:) = 0; % zero out error too close to the boundaries

@@ -6,8 +6,7 @@ colors = hsv(number_of_trains)*0.7+0.3;
 ticks = 1:size(x,2);
 for k=1:number_of_trains
     y = reconstruct(u(:,k), w(:,:,k));
-    sig = sqrt(mean(mean(w(:,:,k).^2))+eps);
-    y(abs(y)<sig) = nan;
+    y(y==0) = nan;
     plot(bsxfun(@plus, y/spacing, ticks), ...
         'color', colors(k,:), 'linewidth', 3)
     hold on

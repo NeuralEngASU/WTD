@@ -12,7 +12,11 @@ for k=1:number_of_trains
     hold on
 end
 plot(bsxfun(@plus, x/spacing, ticks), 'k', 'linewidth',.5)
-set(gca, 'YTick', ticks)
+ylim([0 2])
+xlabel('Samples', 'FontSize', 30)
+set(gca,'FontSize',30)
+set(gca, 'YTick',[])
+%set(gca, 'YTick', ticks)
 hold off
 grid on
 drawnow

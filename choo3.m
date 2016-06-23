@@ -5,10 +5,12 @@ function [w, u] = choo3(x, number_of_trains, waveform_width)
 assert(mod(waveform_width, 2) == 1, 'waveform_width must be odd')
 
 % for thresholding (standard deviations)
-sigma = 2.0;
+sigma = 2;
 
 % algorithm controls
-selectivity = 0.2;   % between 0 and 1, most likely between 0 and 0.5
+selectivity = 0.7;   % between 0 and 1, most likely between 0 and 0.5
+%min_area = 10*waveform_width; % waveform non-flatness (for lack of a better name) threshold
+%diff_thresh = 2000;
 
 % rename for brevity
 d = waveform_width;
@@ -24,8 +26,8 @@ initial_kernel = gausswin(d,9);
 err = x;
 niters = 6*number_of_trains + sqrt(36*number_of_trains);  % rule of thumb
 for iter = 1:niters
-    fprintf('Iteration %3d: residual %1.6e\n', iter, sqrt(mean(err(:).^2)))
-    show_trains(x,u,w); % Uncomment to show wavetrains at each step. Comment for speed.
+    % fprintf('Iteration %3d: residual %1.6e\n', iter, sqrt(mean(err(:).^2)))
+    % show_trains(x,u,w); % Uncomment to show wavetrains at each step. Comment for speed.
     
     for iTrain = 1:min(ceil(iter/4), K) % every four iterations a new train is added
         if sum(u(:,iTrain)) == 0
@@ -36,6 +38,7 @@ for iter = 1:niters
             w(:,j,iTrain) = bsxfun(@times,err(i+(-m:m),j), initial_kernel);
         else
             % update waveform to better fit data for current occurrences
+            % keyboard
             w(:,:,iTrain) = w(:,:,iTrain) + ...
                 conv2(err,flipud(u(m+1:end-m,iTrain))/sum(u(m+1:end-m,iTrain)),'valid');
         end
@@ -53,10 +56,34 @@ for iter = 1:niters
         err = x - reconstruct(u,w);
     end
 end
-%keyboard
 
+%% experimental code 
+
+% area threshold
+%{
+for i = 1:length(w(1,:,1))
+    for j = 1:length(w(1,1,:))
+        if trapz(abs(w(:,i,j))) < min_area
+            w(:,i,j) = 0;
+        end
+    end
 end
+%}
 
+% max - min difference threshold
+%{
+for i = 1:length(w(1,:,1))
+    for j = 1:length(w(1,1,:))
+        if max(w(:,i,j)) - min(w(:,i,j)) < diff_thresh
+            w(:,i,j) = 0;
+        end
+    end
+end
+%}
+% local error inforcement
+
+% end choo3
+end
 
 function d = width(w)
 % the effective width of the waveform w, calculated from the standard
